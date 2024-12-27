@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="SampleCRUD.css">
+    <title>Crud Test</title>
+    
+</head>
+<body onload="readAll()">
+    <div class="container">
+        <div class="formContainer">
+            <form class="addUser">
+                <input type="number" class="id" placeholder="Enter You Id">
+                <input type="text" class="name" placeholder="enter Your Name">
+                <input type="number" class="cell" placeholder="Enter Your Mobile Number">
+                <button type="button" onclick="createUser()" >Create</button>
+            </form>
+            <form class="updateUser">
+                <input type="number" class="uid" placeholder="Enter You Id">
+                <input type="text" class="uname" placeholder="enter Your Name">
+                <input type="number" class="ucell" placeholder="Enter Your Mobile Number">
+                <button type="button" onclick="updateUser()">Update</button>
+            </form>
+            <div class="adddiv">
+                <button class="add" onclick="addButton()">Add User</button>
+            </div>
+            <div class="backdiv">
+                <button class="back" onclick="backButton()">Back</button>
+            </div>
+            <table >
+                <thead>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>MOBILE NUMBER</th>
+                    <th>ACTION</th>
+                </thead>
+                <tbody class="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="SampleCRUD.js"></script>
+</body>
+</html>

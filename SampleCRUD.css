@@ -1,0 +1,91 @@
+body{
+    
+height: 100%;
+width: 100%;
+justify-content: center;
+background-color: aquamarine;
+  }
+  .formContainer{
+
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    display: flex;
+  }
+.addUser{
+    
+}
+.addUser button{
+    border-radius: 10px;
+    padding:  5px 15px 5px 10px;
+    font-weight: bolder;
+    cursor: pointer;
+    background-color: green;
+    color: aliceblue;
+}
+.updateUser button{
+
+ border-radius: 10px;
+    padding:  5px 15px 5px 10px;
+    font-weight: bolder;
+    cursor: pointer;
+    margin-top: 15px;
+    background-color: orange;
+}
+.jstabled{
+    border-radius: 10px;
+    padding:  5px 15px 5px 10px;
+    font-weight: bolder;
+    cursor: pointer;
+    margin-top: 15px;
+    background-color: red;
+    color: white;
+}
+.jstablee{
+    border-radius: 10px;
+    padding:  5px 15px 5px 10px;
+    font-weight: bolder;
+    cursor: pointer;
+    margin-top: 15px;
+    background-color: blue;
+    color: white;
+}
+.adddiv{
+    width: 100vw;
+    padding: 5px 0px 0px 95px;
+    margin-top: 30px;
+    
+}
+.add{
+    cursor: pointer;
+    background-color: blue;
+    color: antiquewhite;
+    border-radius: 10px;
+    padding:  5px 15px 5px 10px;
+    font-weight: bolder;
+}
+.backdiv{
+    width: 100vw;
+    padding: 5px 0px 0px 95px;
+    margin-top: 10px;
+}
+.back{
+    cursor: pointer;
+    background-color: yellow;
+    color: red;
+    border-radius: 10px;
+    padding:  5px 15px 5px 10px;
+    font-weight: bolder;
+}
+input{
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid green;
+}
+table{
+    width: 100%; 
+
+}
+td{
+    text-align: center;
+}
