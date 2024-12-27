@@ -140,6 +140,10 @@ function editUser(id) {
         document.querySelector(".uname").value = oldStudentData[0].name;
         document.querySelector(".ucell").value = oldStudentData[0].mobile;
 
+
+        // To disable Id input field for edit
+        document.querySelector(".uid").disabled = true;
+
         // Show the "Update" button and hide the "Add" button
         document.querySelector(".updateUser").style.display = "block";
         document.querySelector(".addUser").style.display = "none";
