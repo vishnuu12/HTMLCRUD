@@ -1,205 +1,199 @@
 
+function readAll() {
 
-// once load display the body inside opertion or function (readAll()) 
-function readAll(){
+        // Hide the add and update buttons by default
+        document.querySelector(".addUser").style.display = "none";
+        document.querySelector(".updateUser").style.display = "none";
 
-        //additional
-       document.querySelector(".addUser").style.display="none"
-       document.querySelector(".updateUser").style.display="none"
+        // Initialize an empty array in case there's no data in localStorage
+        let studentsDetailsParseData = [];
 
-       var studentsDetailsParseData = [];
-       
-                //get from studentsDetails in localstorage to assign new variable(studentsDetailsvariable)  
-        var studentsDetailsVariable = localStorage.getItem("studentsDetails")
+        // Retrieve the students data from localStorage
+        let studentsDetailsVariable = localStorage.getItem("studentsDetails");
+        console.log('studentsDetailsVariable', studentsDetailsVariable);
 
-        if(studentsDetailsVariable === null){
-                studentsDetailsParseData = [];
+        // Check if data exists in localStorage
+        if (studentsDetailsVariable === null || studentsDetailsVariable === "[]") {
+                studentsDetailsParseData = []; // No data available, set to empty array
+        } else {
+                try {
+                        // Parse the string into an array or object
+                        studentsDetailsParseData = JSON.parse(studentsDetailsVariable);
+
+                        // Check if it's an array
+                        if (!Array.isArray(studentsDetailsParseData)) {
+                                console.error("Expected an array but got:", typeof (studentsDetailsParseData));
+                                studentsDetailsParseData = []; // Default to empty array if it's not an array
+                        }
+                } catch (error) {
+                        console.error("Error parsing the data from localStorage:", error);
+                        studentsDetailsParseData = []; // Default to empty array on error
+                }
         }
 
-        else {
-        
-                //this method (JSON string and then transform into js object(JSON.parse)) to sutentsDetail variable
-        studentsDetailsParseData = JSON.parse(studentsDetailsVariable)
-        
-                // string datatype
-        var element = ""
-        
-        //console.log(typeof element)
-                //it's array containing records of students(studentsDetail).
-                //map it used iterate over each record
-                
-                studentsDetailsParseData.map(record =>(
-                        element +=
-                        `
-                        <tr>
-                                <td>${record.id}</td>
-                                <td>${record.name}</td>
-                                <td >${record.mobile}</td>
-                                <td>
-                                        <button class="jstablee" onclick=(edit(${record.id}))> Edit </button>
-                                        <button class="jstabled" onclick=(delet(${record.id}))> Delete </button>
-                                </td>
+        // Initialize an empty string to store the HTML content
+        let element = "";
 
-                        </tr>
-                        `
-                )
-        )
-        
-                // get the html tablebody into new variable(tabledata) 
-        var tabledata = document.querySelector(".tableBody")
+        // Iterate over the students data if it's an array
+        studentsDetailsParseData.forEach(record => {
+                element += `
+                <tr>
+                    <td>${record.id}</td>
+                    <td>${record.name}</td>
+                    <td>${record.mobile}</td>
+                    <td>
+                        <button class="jstablee" onclick="editUser(${record.id})">Edit</button>
+                        <button class="jstabled" onclick="deleteUser(${record.id})">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
 
-        tabledata.innerHTML = element
+        // Get the table body and set its innerHTML
+        let tabledata = document.querySelector(".tableBody");
+        tabledata.innerHTML = element;
+}
 
+
+function createUser() {
+        // Get input data values
+        var newid = document.querySelector(".id").value;
+        var newname = document.querySelector(".name").value;
+        var newcell = document.querySelector(".cell").value;
+
+        // Create a new student object
+        var newStudentsDetails = {
+                id: parseInt(newid),
+                name: newname,
+                mobile: newcell
+        };
+
+        // Retrieve existing student data from localStorage
+        var studentsDetailsVariable = localStorage.getItem("studentsDetails");
+
+        // Check if studentsDetails is already in localStorage
+        var studentsDetailsParseData = [];
+
+        if (studentsDetailsVariable !== null) {
+                // Parse existing data if it exists
+                studentsDetailsParseData = JSON.parse(studentsDetailsVariable);
         }
 
+        // Push the new student to the array
+        studentsDetailsParseData.push(newStudentsDetails);
 
+        // Save the updated array back to localStorage
+        localStorage.setItem("studentsDetails", JSON.stringify(studentsDetailsParseData));
+
+        // Refresh the data on the page
+        readAll();
 }
 
 
-function createUser(){
 
-                //get input data value in variable
-        var newid = document.querySelector(".id").value
-        var newname = document.querySelector(".name").value
-        var newcell = document.querySelector(".cell").value
-        
-                //(newStudentsDetails)It will hold a newly created object
-        var  newStudentsDetails = {id:parseInt(newid), name:newname, mobile:newcell}
+function deleteUser(id) {
+        // Confirm if the user really wants to delete the student record
+        const isConfirmed = confirm("Are you sure you want to remove this student?");
 
-                //get from studentsDetails in localstorage to assign new variable(studentsDetailsvariable)  
-        var studentsDetailsVariable = localStorage.getItem("studentsDetails")
-
-        if(studentsDetailsVariable === null){
-                localStorage.setItem("studentsDetails",JSON.stringify(newStudentsDetails))
-
+        if (!isConfirmed) {
+                return; // Exit if the user cancels the deletion
         }
 
-                //this method (JSON string and then transform into js object(JSON.parse)) to sutentsDetail variable
-        var studentsDetailsParseData = JSON.parse(studentsDetailsVariable)
-        
-         // method used to add one or more elements to the end of an array
-        studentsDetailsParseData.push(newStudentsDetails)
+        // Retrieve the student data from localStorage
+        let studentsDetailsParseData = JSON.parse(localStorage.getItem("studentsDetails"));
 
-                //  code removes an item stored in the browser's
-        localStorage.removeItem("studentsDetails")
+        // If the data exists and it's an array, filter out the student by id
+        if (Array.isArray(studentsDetailsParseData)) {
+                // Filter out the student with the given id
+                let studentsDetailsfilter = studentsDetailsParseData.filter(student => student.id !== id);
 
-                //this method (JSON string and then transform into js object(JSON.parse)) to sutentsDetail variable
-                //set new item to localstorage
-        localStorage.setItem("studentsDetails",JSON.stringify(studentsDetailsParseData))
+                // Save the updated list back to localStorage
+                localStorage.setItem("studentsDetails", JSON.stringify(studentsDetailsfilter));
 
+                // Refresh the table to reflect the changes
+                readAll();
+        } else {
+                console.error("Error: No student data found in localStorage or incorrect format.");
+        }
+}
 
+function editUser(id) {
+        console.log('Editing student with ID:', id);
 
-        readAll()
-        location.reload();
+        // Get the students' details from localStorage
+        var studentsDetailsParseData = JSON.parse(localStorage.getItem("studentsDetails"));
+
+        // Filter the student with the matching id
+        var oldStudentData = studentsDetailsParseData.filter(student => student.id === id);
+
+        // Check if the student data exists
+        if (oldStudentData.length === 0) {
+                console.error('Student with ID ' + id + ' not found.');
+                return; // Exit if no student found
+        }
+
+        // Log the found student data for debugging
+        console.log("Found student data:", oldStudentData);
+
+        // Populate the form fields with the current student data
+        document.querySelector(".uid").value = oldStudentData[0].id;
+        document.querySelector(".uname").value = oldStudentData[0].name;
+        document.querySelector(".ucell").value = oldStudentData[0].mobile;
+
+        // Show the "Update" button and hide the "Add" button
+        document.querySelector(".updateUser").style.display = "block";
+        document.querySelector(".addUser").style.display = "none";
 }
 
 
 
-function delet(id){
-        alert("Are You Remove Confirm");
+function updateUser() {
+        // Get the values from the form fields
+        var id = document.querySelector(".uid").value;
+        var name = document.querySelector(".uname").value;
+        var cell = document.querySelector(".ucell").value;
 
-        // var studentsDetailsVariable = localStorage.getItem("studentsDetails")
-        // var studentsDetailsParseData = JSON.parse(studentsDetailsVariable)
+        // Create the updated student object
+        var studentUpdateDetails = { id: parseInt(id), name: name, mobile: cell };
 
-        var studentsDetailsParseData =JSON.parse(localStorage.getItem("studentsDetails"))
-        var studentsDetailsfilter = studentsDetailsParseData.filter(student => student.id !==id)
-        
-       localStorage.removeItem("studentsDetails")
+        // Get the student details from localStorage
+        var studentsDetailsVariable = localStorage.getItem("studentsDetails");
 
-      localStorage.setItem("studentsDetails", JSON.stringify(studentsDetailsfilter))
+        if (!studentsDetailsVariable) {
+                console.error("No student data found in localStorage.");
+                return;
+        }
 
-      readAll()
-      location.reload()
+        var studentsDetailsParseData = JSON.parse(studentsDetailsVariable);
+
+        // Check if studentsDetailsParseData is an array
+        if (!Array.isArray(studentsDetailsParseData)) {
+                console.error("The data in localStorage is not in the expected format.");
+                return;
+        }
+
+        // Use map() to update the student data
+        var updatedStudentsDetails = studentsDetailsParseData.map(student =>
+                student.id === parseInt(id) ? studentUpdateDetails : student
+        );
+
+        // Save the updated list back to localStorage
+        localStorage.setItem("studentsDetails", JSON.stringify(updatedStudentsDetails));
+
+        // Refresh the UI (display the updated list of students)
+        readAll();
 }
 
 
-function edit(id){
-
-        console.log('studentData ', id);
-        
-                var studentsDetailsParseData = JSON.parse(localStorage.getItem("studentsDetails"))
-                var oldStudentData = studentsDetailsParseData.filter(students => students.id === id)
-
-
-
-                console.log("studentsDetailsfilter", oldStudentData)
-                      
-
-              document.querySelector(".uid").value = oldStudentData[0].id
-              document.querySelector(".uname").value = oldStudentData[0].name
-              document.querySelector(".ucell").value = oldStudentData[0].mobile
-
-
-              
-
-   //additional
-        document.querySelector(".updateUser").style.display="block"
-
-        document.querySelector(".addUser").style.display="none"
+function addButton() {
+        document.querySelector(".addUser").style.display = "block"
+        document.querySelector(".updateUser").style.display = "none"
 
 
 }
-
-
-
-function updateUser(){
-
-        var id = document.querySelector(".uid").value
-        var name = document.querySelector(".uname").value
-        var cell = document.querySelector(".ucell").value
-
-        var studentUpdateDetails = {id:parseInt(id), name:name, mobile:cell}
-
-        //console.log('studentUpdateDetails ', studentUpdateDetails);
-        
-        
-       
-        var studentsDetailsVariable = localStorage.getItem("studentsDetails")
-        var studentsDetailsParseData = JSON.parse(studentsDetailsVariable)
-
-
-          var studentsDetailsfilter = studentsDetailsParseData.filter(student => student.id !==parseInt(id))
-
-          studentsDetailsfilter.push(studentUpdateDetails)
-          
-       localStorage.removeItem("studentsDetails")
-
-        localStorage.setItem("studentsDetails",JSON.stringify(studentsDetailsfilter))
-        
-
-
-     //  console.log("studentsDetailsfilter2",studentsDetailsfilter)
-//        localStorage.removeItem("studentsDetails")
-
-//         localStorage.setItem("studentsDetails",JSON.stringify(studentsDetailsfilter))
-
-      location.reload()
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function addButton(){
-        document.querySelector(".addUser").style.display="block"
-        document.querySelector(".updateUser").style.display="none"
-        
-
-}
-function backButton(){
-        document.querySelector(".updateUser").style.display="none"
-        document.querySelector(".addUser").style.display="none"
+function backButton() {
+        document.querySelector(".updateUser").style.display = "none"
+        document.querySelector(".addUser").style.display = "none"
         readAll()
 
 }
